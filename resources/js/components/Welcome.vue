@@ -1,4 +1,4 @@
-<<template lang="eng">
+<template lang="eng">
   <div>
     <h1>Welcome to Laravel with Vue JS!</h1>
   </div>
