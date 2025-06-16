@@ -1,8 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\UserController;
-use App\Models\User;
-Route::get('/', function () { return view('welcome'); });
 
-Route::get('/users', [UserController::class, 'getUsers']);
+Route::get('/{any}', function () {
+    return view('welcome'); // your main view with Vue app
+})->where('any', '.*');
