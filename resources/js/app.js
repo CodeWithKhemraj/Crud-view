@@ -1,6 +1,14 @@
 import './bootstrap';
-import { createApp } from "vue";
-import app from "./layouts/app.vue";
+import { createApp } from 'vue';
+import App from './layouts/App.vue';
+import router from './routes';
+import axios from 'axios';
 import vuetify from "./vuetify";
-  
-createApp(app).use(vuetify).mount("#app");
+
+const app = createApp(App);
+
+app.config.globalProperties.$axios = axios;
+
+app.use(router);
+app.use(vuetify);
+app.mount('#app');

@@ -30,6 +30,7 @@ const crudTheme = {
         white: "#FFFFFF",
         muted: "#6c757d",
     },
+    
 };
  
 const vuetify = createVuetify({
