@@ -5,6 +5,7 @@ import Router from './routes';
 import axios from 'axios';
 import Vuetify from "./vuetify";
 import ToastPlugin from 'vue-toast-notification';
+import 'vue-toast-notification/dist/theme-sugar.css';
 
 const app = createApp(App);
 

@@ -1,7 +1,7 @@
 <template>
     <div class="row">
         <div class="col-12 mb-2 text-end">
-            <router-link :to='{ name: "usersAdd" }' class="btn btn-primary">Create</router-link>
+            <router-link :to='{ name: "usersAdd" }' class="btn btn-primary">Create user</router-link>
         </div>
         <div class="col-12">
             <div class="card">
@@ -20,15 +20,15 @@
                                 </tr>
                             </thead>
                             <tbody v-if="users.length > 0">
-                                <tr v-for="(users, key) in users" :key="key">
-                                    <td>{{ users.id }}</td>
-                                    <td>{{ users.name }}</td>
-                                    <td>{{ users.email }}</td>
+                                <tr v-for="(user, key) in users" :key="key">
+                                    <td>{{ key + 1 }}</td> <!-- Sr Number -->
+                                    <td>{{ user.name }}</td>
+                                    <td>{{ user.email }}</td>
                                     <td>
-                                        <router-link :to='{ name: "usersEdit", params: { id: users.id } }'
-                                            class="btn btn-success ">Edit</router-link>
-                                        <button type="button" @click="deleteUser(users.id)"
-                                            class="btn btn-danger mx-2 text-white" color="primary">Delete</button>
+                                        <router-link :to='{ name: "usersEdit", params: { id: user.id } }'
+                                            class="btn btn-success">Edit</router-link>
+                                        <button type="button" @click="handleDeleteUser(user.id)"
+                                            class="btn btn-danger mx-2 text-white">Delete</button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -46,19 +46,42 @@
 </template>
 
 <script setup>
-    import { ref, onMounted } from 'vue'
-    import { getUsers, deleteUser } from '../../services/userService.js'
+import { ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+import { useToast } from 'vue-toast-notification'
+import { getUsers, deleteUser } from '../../services/userService.js'
 
-    const users = ref([])
+const route = useRoute()
+const users = ref([])
+const $toast = useToast() // useToast call corrected
 
-    const fetchUsers = async () => {   users.value = await getUsers() }
+const fetchUsers = async () => {
+    try {
+        users.value = await getUsers()
+    } catch (error) {
+        $toast.error('Error fetching users')
+        console.error('Error:', error)
+    }
+}
 
-    const handleDeleteUser = async (id) => {
-        if (confirm('Are you sure you want to delete this user?')) {
+const handleDeleteUser = async (id) => {
+    if (confirm('Are you sure you want to delete this user?')) {
+        try {
             const success = await deleteUser(id)
-            if (success) { await fetchUsers() }
+            if (success) {
+                await fetchUsers()
+                $toast.success('User deleted successfully!')
+            } else {
+                $toast.error('Failed to delete user')
+            }
+        } catch (error) {
+            $toast.error('Error deleting user')
+            console.error('Error deleting user:', error)
         }
     }
+}
 
-    onMounted(() => { fetchUsers() })
+onMounted(() => {
+    fetchUsers()
+})
 </script>
