@@ -19,7 +19,6 @@ export const editUsers = async (id) => {
 
   try {
     const response = await axios.get(`/api/users/${id}/edit`);
-    console.log('Edit user data:', response.data);
     return response.data; // return user data
   } catch (error) {
     console.error('Error fetching user:', error);
@@ -32,7 +31,7 @@ export const editUsers = async (id) => {
 export const updateUser = async (id) => {
 
   try {
-    await axios.delete(`/api/users/${id}`)
+    await axios.put(`/api/users/${id}`)
     return true
   } catch (error) {
     console.error('Error deleting user:', error)

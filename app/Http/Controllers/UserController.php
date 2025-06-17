@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Http\Client\ResponseSequence;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -56,17 +55,20 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $user)
+    public function update(Request $request, $id)
     {
-        $response = $user->update([
-            'name' =>   $request->name ??  'khem',
-            'email' =>  $request->email ?? 'khem@gmail.com' ,
-        ]); 
-        if($response == true){
-            return response()->json(['message' => 'User Updated Successfully!!','user' => $user  ]);
-        }else{
-            return response()->json(['error' => 'Something went wrong' ]);
-        }
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email',
+        ]);
+    
+        $user = User::findOrFail($id);
+        $user->name = $request->input('name');
+        $user->email = $request->input('email');
+        
+        $user->save();
+    
+        return response()->json(['message' => 'User updated successfully']);
     }
     /**
      * Remove the specified resource from storage.
